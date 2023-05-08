@@ -27,7 +27,7 @@ bool perf_pmu__hybrid_mounted(const char *name)
 	if (strncmp(name, "cpu_", 4))
 		return false;
 
-	strlcpy(pmu_name, name, sizeof(pmu_name));
+	strscpy(pmu_name, name, sizeof(pmu_name));
 	return perf_pmu__scan_file(&pmu, "cpus", "%u", &cpu) > 0;
 }
 

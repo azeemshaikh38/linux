@@ -40,20 +40,20 @@ TRACE_EVENT(task_rename,
 	TP_STRUCT__entry(
 		__field(	pid_t,	pid)
 		__array(	char, oldcomm,  TASK_COMM_LEN)
-		__array(	char, newcomm,  TASK_COMM_LEN)
+		__string(	newcomm, comm)
 		__field(	short,	oom_score_adj)
 	),
 
 	TP_fast_assign(
 		__entry->pid = task->pid;
 		memcpy(entry->oldcomm, task->comm, TASK_COMM_LEN);
-		strlcpy(entry->newcomm, comm, TASK_COMM_LEN);
+		__assign_str(newcomm, comm);
 		__entry->oom_score_adj = task->signal->oom_score_adj;
 	),
 
 	TP_printk("pid=%d oldcomm=%s newcomm=%s oom_score_adj=%hd",
 		__entry->pid, __entry->oldcomm,
-		__entry->newcomm, __entry->oom_score_adj)
+		__get_str(newcomm), __entry->oom_score_adj)
 );
 
 #endif

@@ -21,8 +21,8 @@ TRACE_EVENT(kyber_latency,
 
 	TP_STRUCT__entry(
 		__field(	dev_t,	dev				)
-		__array(	char,	domain,	DOMAIN_LEN		)
-		__array(	char,	type,	LATENCY_TYPE_LEN	)
+		__string(	domain,	domain				)
+		__string(	type,	type				)
 		__field(	u8,	percentile			)
 		__field(	u8,	numerator			)
 		__field(	u8,	denominator			)
@@ -31,8 +31,8 @@ TRACE_EVENT(kyber_latency,
 
 	TP_fast_assign(
 		__entry->dev		= dev;
-		strlcpy(__entry->domain, domain, sizeof(__entry->domain));
-		strlcpy(__entry->type, type, sizeof(__entry->type));
+		__assign_str(domain, domain);
+		__assign_str(type, type);
 		__entry->percentile	= percentile;
 		__entry->numerator	= numerator;
 		__entry->denominator	= denominator;
@@ -40,8 +40,8 @@ TRACE_EVENT(kyber_latency,
 	),
 
 	TP_printk("%d,%d %s %s p%u %u/%u samples=%u",
-		  MAJOR(__entry->dev), MINOR(__entry->dev), __entry->domain,
-		  __entry->type, __entry->percentile, __entry->numerator,
+		  MAJOR(__entry->dev), MINOR(__entry->dev), __get_str(domain),
+		  __get_str(type), __entry->percentile, __entry->numerator,
 		  __entry->denominator, __entry->samples)
 );
 
@@ -53,18 +53,18 @@ TRACE_EVENT(kyber_adjust,
 
 	TP_STRUCT__entry(
 		__field(	dev_t,	dev			)
-		__array(	char,	domain,	DOMAIN_LEN	)
+		__string(	domain,	domain			)
 		__field(	unsigned int,	depth		)
 	),
 
 	TP_fast_assign(
 		__entry->dev		= dev;
-		strlcpy(__entry->domain, domain, sizeof(__entry->domain));
+		__assign_str(domain, domain);
 		__entry->depth		= depth;
 	),
 
 	TP_printk("%d,%d %s %u",
-		  MAJOR(__entry->dev), MINOR(__entry->dev), __entry->domain,
+		  MAJOR(__entry->dev), MINOR(__entry->dev), __get_str(domain),
 		  __entry->depth)
 );
 
@@ -76,16 +76,16 @@ TRACE_EVENT(kyber_throttled,
 
 	TP_STRUCT__entry(
 		__field(	dev_t,	dev			)
-		__array(	char,	domain,	DOMAIN_LEN	)
+		__string(	domain,	domain			)
 	),
 
 	TP_fast_assign(
 		__entry->dev		= dev;
-		strlcpy(__entry->domain, domain, sizeof(__entry->domain));
+		__assign_str(domain, domain);
 	),
 
 	TP_printk("%d,%d %s", MAJOR(__entry->dev), MINOR(__entry->dev),
-		  __entry->domain)
+		  __get_str(domain))
 );
 
 #define _TRACE_KYBER_H

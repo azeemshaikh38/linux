@@ -318,7 +318,7 @@ int filename__decompress(const char *name, char *pathname,
 		unlink(tmpbuf);
 
 	if (pathname && (fd >= 0))
-		strlcpy(pathname, tmpbuf, len);
+		strscpy(pathname, tmpbuf, len);
 
 	return fd;
 }

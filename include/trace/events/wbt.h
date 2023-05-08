@@ -19,7 +19,7 @@ TRACE_EVENT(wbt_stat,
 	TP_ARGS(bdi, stat),
 
 	TP_STRUCT__entry(
-		__array(char, name, 32)
+		__string(name, bdi_dev_name(bdi))
 		__field(s64, rmean)
 		__field(u64, rmin)
 		__field(u64, rmax)
@@ -33,8 +33,7 @@ TRACE_EVENT(wbt_stat,
 	),
 
 	TP_fast_assign(
-		strlcpy(__entry->name, bdi_dev_name(bdi),
-			ARRAY_SIZE(__entry->name));
+		__assign_str(name, bdi_dev_name(bdi));
 		__entry->rmean		= stat[0].mean;
 		__entry->rmin		= stat[0].min;
 		__entry->rmax		= stat[0].max;
@@ -47,7 +46,7 @@ TRACE_EVENT(wbt_stat,
 
 	TP_printk("%s: rmean=%llu, rmin=%llu, rmax=%llu, rsamples=%llu, "
 		  "wmean=%llu, wmin=%llu, wmax=%llu, wsamples=%llu",
-		  __entry->name, __entry->rmean, __entry->rmin, __entry->rmax,
+		  __get_str(name), __entry->rmean, __entry->rmin, __entry->rmax,
 		  __entry->rnr_samples, __entry->wmean, __entry->wmin,
 		  __entry->wmax, __entry->wnr_samples)
 );
@@ -63,17 +62,16 @@ TRACE_EVENT(wbt_lat,
 	TP_ARGS(bdi, lat),
 
 	TP_STRUCT__entry(
-		__array(char, name, 32)
+		__string(name, bdi_dev_name(bdi))
 		__field(unsigned long, lat)
 	),
 
 	TP_fast_assign(
-		strlcpy(__entry->name, bdi_dev_name(bdi),
-			ARRAY_SIZE(__entry->name));
+		__assign_str(name, bdi_dev_name(bdi));
 		__entry->lat = div_u64(lat, 1000);
 	),
 
-	TP_printk("%s: latency %lluus", __entry->name,
+	TP_printk("%s: latency %lluus", __get_str(name),
 			(unsigned long long) __entry->lat)
 );
 
@@ -95,7 +93,7 @@ TRACE_EVENT(wbt_step,
 	TP_ARGS(bdi, msg, step, window, bg, normal, max),
 
 	TP_STRUCT__entry(
-		__array(char, name, 32)
+		__string(name, bdi_dev_name(bdi))
 		__field(const char *, msg)
 		__field(int, step)
 		__field(unsigned long, window)
@@ -105,8 +103,7 @@ TRACE_EVENT(wbt_step,
 	),
 
 	TP_fast_assign(
-		strlcpy(__entry->name, bdi_dev_name(bdi),
-			ARRAY_SIZE(__entry->name));
+		__assign_str(name, bdi_dev_name(bdi));
 		__entry->msg	= msg;
 		__entry->step	= step;
 		__entry->window	= div_u64(window, 1000);
@@ -116,7 +113,7 @@ TRACE_EVENT(wbt_step,
 	),
 
 	TP_printk("%s: %s: step=%d, window=%luus, background=%u, normal=%u, max=%u",
-		  __entry->name, __entry->msg, __entry->step, __entry->window,
+		  __get_str(name), __entry->msg, __entry->step, __entry->window,
 		  __entry->bg, __entry->normal, __entry->max)
 );
 
@@ -134,21 +131,20 @@ TRACE_EVENT(wbt_timer,
 	TP_ARGS(bdi, status, step, inflight),
 
 	TP_STRUCT__entry(
-		__array(char, name, 32)
+		__string(name, bdi_dev_name(bdi))
 		__field(unsigned int, status)
 		__field(int, step)
 		__field(unsigned int, inflight)
 	),
 
 	TP_fast_assign(
-		strlcpy(__entry->name, bdi_dev_name(bdi),
-			ARRAY_SIZE(__entry->name));
+		__assign_str(name, bdi_dev_name(bdi));
 		__entry->status		= status;
 		__entry->step		= step;
 		__entry->inflight	= inflight;
 	),
 
-	TP_printk("%s: status=%u, step=%d, inflight=%u", __entry->name,
+	TP_printk("%s: status=%u, step=%d, inflight=%u", __get_str(name),
 		  __entry->status, __entry->step, __entry->inflight)
 );
 
